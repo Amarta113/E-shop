@@ -1,15 +1,14 @@
 import React from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import Login from '../src/pages/Login.jsx'
+import {LoginPage} from "./Routes.js"
 
 export default function App () {
 
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path='/login' element={<Login/>} />
-    </Routes>
-    
+      <Routes>
+        <Route path='/login' element={<LoginPage/>} />
+      </Routes>
     </BrowserRouter>
   )
 }
