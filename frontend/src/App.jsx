@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import {LoginPage} from "./Routes.js"
+import {LoginPage} from "./Routes.jsx"
 
 export default function App () {
 
