@@ -2,6 +2,7 @@ import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express"
+import { errorMiddleware } from "./middleware/error.js";
 
 const app = express()
 
@@ -11,9 +12,8 @@ app.use(cors({
     origin: process.env.FRONTEND_URL,
     credential: true
 }))
-
 app.get('/', (req, res) => {res.json({success: true, message: "server is running"})})
-
+app.use(errorMiddleware)
 
 
 const PORT = process.env.PORT || 8000
