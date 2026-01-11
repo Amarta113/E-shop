@@ -11,15 +11,25 @@ const userSchema = new mongoose.Schema({
     },
     phone: String,
     accountVerified: {type: Boolean, default: false},
-    verficationCodeExpire: Date,
+    verificationCode: Number,
+    verificationCodeExpire: Date,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {
         type: Date,
         default: Date.now,
-    } 
+    },
+    avatar: {
+        public_id: {
+            type: String,
+            required: true,
+        },
+        url: {
+            type: String,
+            required: true,
+        },
+    }, 
 })
-
 
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")){
@@ -31,5 +41,6 @@ userSchema.pre("save", async function(next){
 userSchema.methods.comparePassword = async function(enteredPassword){
     return await bcrypt.compare(enteredPassword, this.password);
 }
+
 
 export const User = mongoose.model("User", userSchema)
