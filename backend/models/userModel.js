@@ -42,5 +42,21 @@ userSchema.methods.comparePassword = async function(enteredPassword){
     return await bcrypt.compare(enteredPassword, this.password);
 }
 
+userSchema.methods.generateVerificationCode = function () {
+  function generateRandomFiveDigitNumber() {
+    const firstDigit = Math.floor(Math.random() * 9) + 1;
+    const remainingDigits = Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, 0);
+
+    return parseInt(firstDigit + remainingDigits);
+  }
+  const verificationCode = generateRandomFiveDigitNumber();
+  this.verificationCode = verificationCode;
+  // check point: verification code will be expire in 10 mints
+  this.verificationCodeExpire = Date.now() + 10 * 60 * 1000;
+
+  return verificationCode;
+};
 
 export const User = mongoose.model("User", userSchema)
