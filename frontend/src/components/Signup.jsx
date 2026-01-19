@@ -3,7 +3,8 @@ import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai"
 import { RxAvatar } from "react-icons/rx";
 import { Link } from 'react-router-dom'
 import styles from '../styles/styles'
-
+import axios from 'axios';
+import { server } from '../server.js';
 
 export default function Signup () {
     const [name, setName] = useState("")
@@ -11,8 +12,21 @@ export default function Signup () {
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
     const [avatar, setAvatar] = useState(null);
-    const handleSubmit = () => {
-        console.log("ffff")
+
+    const handleSubmit = async(e) => {
+        const config = {headers: {'Content-Type': 'multipart/fomr-data'}}
+       const newForm = new FormData();
+       newForm.append("file", avatar)
+       newForm.append("name", name)
+       newForm.append("email", email)
+       newForm.append("password", password)
+       axios.post(`${server}/user/register`, newForm, config)
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
     }
     const handleFileInputChange = (e) => {
         const file = e.target.files[0];
