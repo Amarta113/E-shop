@@ -4,20 +4,11 @@ import { User } from '../models/userModel.js'
 
 export const register = catchAsyncError(async(req, res, next) => {
     try{
-        const {name, email, phone, password} = req.body
-        if(!name || !email || !phone || !password){
+        const {name, email, password} = req.body
+        if(!name || !email || !password){
             return next(new ErrorHandler("All fields are required", 400))
         }
         const existingUser = await User.findOne({email})
-
-        function validatePhoneNumber(phone) {
-            const phoneRegex = /^\+923\d{9}$/;
-            return phoneRegex.test(phone);
-        }
-
-        if (!validatePhoneNumber(phone)) {
-            return next(new ErrorHandler("Invalid phone number.", 400));
-        }
 
         if(existingUser){
             // cleanup image if email already exists
@@ -35,7 +26,6 @@ export const register = catchAsyncError(async(req, res, next) => {
         const userData = {
             name,
             email,
-            phone,
             password,
             accountVerified: true,
             avatar: {
