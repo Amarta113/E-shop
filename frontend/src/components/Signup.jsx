@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import styles from '../styles/styles'
 import axios from 'axios';
 import { server } from '../server.js';
+import {toast} from 'react-toastify' 
 
 export default function Signup () {
     const [name, setName] = useState("")
@@ -12,21 +13,37 @@ export default function Signup () {
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
     const [avatar, setAvatar] = useState(null);
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = async(e) => {
-        const config = {headers: {'Content-Type': 'multipart/fomr-data'}}
-       const newForm = new FormData();
-       newForm.append("file", avatar)
-       newForm.append("name", name)
-       newForm.append("email", email)
-       newForm.append("password", password)
-       axios.post(`${server}/user/register`, newForm, config)
-        .then((res) => {
-            console.log(res)
-        })
-        .catch((err) => {
-            console.log(err)
-        })
+       e.preventDefault();
+       try{
+            
+            const newForm = new FormData();
+            
+            newForm.append("file", avatar)
+            newForm.append("name", name)
+            newForm.append("email", email)
+            newForm.append("password", password)
+            
+            const {data} = await axios.post(`${server}/user/create-user`, newForm)
+
+            if(data?.success){
+                toast.success(data?.success)
+            }
+
+            setEmail("")
+            setName("")
+            setAvatar(null)
+            setPassword("")
+
+        }
+        catch (error){
+            setIsLoading(false)
+            toast.error(error?.response?.data.message)
+            console.error("Error during signup: ", error)
+        } 
+        
     }
     const handleFileInputChange = (e) => {
         const file = e.target.files[0];
@@ -43,7 +60,7 @@ export default function Signup () {
             </div>
             <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor='name' className='block tex-sm font-medium text-gray-700' >Full Name</label>
                             <div className="mt-1">
@@ -85,7 +102,7 @@ export default function Signup () {
                                 </span>
                                 <label htmlFor='file-input' className='ml-5 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 bg:white hover:bg-gray-50 '>
                                     <span>Upload a file</span>
-                                    <input type='file' name='avatar' id='file-input' accept='.jpg, .peg, .png'
+                                    <input type='file' name='avatar' id='file-input' accept='.jpg, .jpeg, .png'
                                     onChange={handleFileInputChange}
                                     className='sr-only '
                                     />
@@ -93,7 +110,10 @@ export default function Signup () {
                             </div>
                         </div>
                         <div>
-                            <button type="submit" className='group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-700 f'>Submit</button>
+                            <button type="submit" 
+                            className='group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-md cursor-pointer'>
+                                {isLoading? "Loading..." : "Signup"}
+                            </button>
                         </div>
                         <div className={`${styles.normalFlex} w-full`}>
                             <h4>Already have any account?</h4>
