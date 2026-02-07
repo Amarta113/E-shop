@@ -1,7 +1,7 @@
+import "dotenv/config"
 import mongoose from "mongoose";
 
 const connectDb = async() => {
-
     try{
         // Check if already connected
         if (mongoose.connection.readyState === 1) {
@@ -9,11 +9,12 @@ const connectDb = async() => {
             return;
         }
 
-        if (!process.env.MONGODB_URL) {
+        if (!process.env.MONGODB_URI) {
             throw new Error("MONGODB_URI environment variable is not set");
         }
+        console.log(process.env.MONGODB_URI)
 
-        const data = await mongoose.connect(process.env.MONGODB_URL)
+        const data = await mongoose.connect(process.env.MONGODB_URI)
         console.log(`MongoDB connected with server: ${data.connection.host}`);
     } catch (error) {
         console.error("MongoDB connection failed:", error.message);
