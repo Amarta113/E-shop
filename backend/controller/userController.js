@@ -35,6 +35,10 @@ export const register = catchAsyncError(async(req, res, next) => {
         }
 
         const user = await User.create(userData);
+
+        const activationTokens = createActivationTokens(userData)
+
+
         const verificationCode = await user.generateVerificationCode();
         await user.save()
         sendVerificationCode(
@@ -57,6 +61,10 @@ async function sendVerificationCode(verificationCode, name, email){
         catch (error) {
         throw new ErrorHandler("Failed to send verification code.", 500)
     }
+}
+
+function createActivationTokens(user) {
+    
 }
 
 function generateEmailTemplate(verificationCode){
