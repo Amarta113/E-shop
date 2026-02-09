@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    credential: true
+    credentials: true
 }))
 app.use('/api/v1/user', userRouter)
 app.get('/', (req, res) => {res.json({success: true, message: "server is running"})})
