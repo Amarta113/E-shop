@@ -1,6 +1,7 @@
 import ErrorHandler from '../middleware/error.js'
 import { catchAsyncError } from '../middleware/catchAsyncError.js'
 import { User } from '../models/userModel.js'
+import cloudinary from '../config/cloudinary.js'
 
 export const register = catchAsyncError(async(req, res, next) => {
     try{
