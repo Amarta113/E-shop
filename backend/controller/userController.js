@@ -2,6 +2,8 @@ import ErrorHandler from '../middleware/error.js'
 import { catchAsyncError } from '../middleware/catchAsyncError.js'
 import { User } from '../models/userModel.js'
 import cloudinary from '../config/cloudinary.js'
+import jwt from 'jsonwebtoken'
+import { sendEmail } from '../utils/sendEmail.js'
 
 export const register = catchAsyncError(async(req, res, next) => {
     try{
@@ -28,47 +30,41 @@ export const register = catchAsyncError(async(req, res, next) => {
             name,
             email,
             password,
-            accountVerified: true,
+            accountVerified: false,
             avatar: {
                 public_Id: req.file.filename.split(".")[0],
                 url: req.file.path
             }
         }
 
-        const user = await User.create(userData);
-
         const activationTokens = createActivationTokens(userData)
+        const activationURL = `${process.env.FRONTEND_URL}/activation/${activationTokens}`;
+        try {
+            await sendEmail({
+                email: userData.email,
+                subject: "Activate your account",
+                message: generateEmailTemplate(activationURL, userData.name)
+            })
+            res.status(201).json({
+                success: true,
+                message: `Please check your email - ${userData.email} to activate your account!`
+            })
 
-
-        const verificationCode = await user.generateVerificationCode();
-        await user.save()
-        sendVerificationCode(
-            verificationCode,
-            name,
-            email)
-        res.status(200).json({
-            success: true
-        })
+        } catch (error) {
+            return next(new ErrorHandler(error.message, 500))
+        }
     } catch(error){
         next(error)
     }
 })
 
-async function sendVerificationCode(verificationCode, name, email){
-    try {  
-        const message = generateEmailTemplate(verificationCode)
-        sendEmail({email, subject: "Your Verification Code", message})
-    }
-        catch (error) {
-        throw new ErrorHandler("Failed to send verification code.", 500)
-    }
-}
-
 function createActivationTokens(user) {
-    
+    return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+        expiresIn: "5m"
+    })
 }
 
-function generateEmailTemplate(verificationCode){
+function generateEmailTemplate(activationURL, name) {
     return `<!DOCTYPE html>
         <html>
             <head>
@@ -89,16 +85,16 @@ function generateEmailTemplate(verificationCode){
 
                     <tr>
                     <td style="padding:25px; color:#333333; font-size:16px;">
-                        <p>Hello,</p>
-                        <p>Thank you for registering. Please use the verification code below to activate your account:</p>
+                        <p>Hello ${name},</p>
+                        <p>Thank you for registering. Please click on the link below to activate your account:</p>
 
                         <div style="margin:25px 0; text-align:center;">
                         <span style="display:inline-block; background:#f0f0f0; padding:15px 25px; font-size:24px; letter-spacing:4px; font-weight:bold; border-radius:6px;">
-                            ${verificationCode}
+                            ${activationURL}
                         </span>
                         </div>
 
-                        <p>This code will expire in 10 minutes.</p>
+                        <p>This link will expire in 10 minutes.</p>
                         <p>If you did not request this, please ignore this email.</p>
 
                         <p style="margin-top:30px;">Regards,<br><strong>Your App Team</strong></p>
@@ -109,7 +105,6 @@ function generateEmailTemplate(verificationCode){
                         © ${new Date().getFullYear()} Your App. All rights reserved.
                     </td>
                     </tr>
-
                 </table>
                 </td>
             </tr>
@@ -117,5 +112,4 @@ function generateEmailTemplate(verificationCode){
         </body>
         </html>
         `
-
 }
