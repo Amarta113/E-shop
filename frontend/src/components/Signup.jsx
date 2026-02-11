@@ -29,7 +29,7 @@ export default function Signup () {
             const {data} = await axios.post(`${server}/user/create-user`, newForm)
 
             if(data?.success){
-                toast.success(data?.success)
+                toast.success("Registration successful! Please check your email for the verification code.")
             }
 
             setEmail("")
