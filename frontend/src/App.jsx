@@ -9,6 +9,7 @@ export default function App () {
       <Routes>
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/sign-up' element={<SignupPage/>} />
+        <Route path='/activation/:token' element={<ActivationPage/>} />
       </Routes>
     </BrowserRouter>
   )
