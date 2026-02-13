@@ -4,6 +4,7 @@ import { User } from '../models/userModel.js'
 import cloudinary from '../config/cloudinary.js'
 import jwt from 'jsonwebtoken'
 import { sendEmail } from '../utils/sendEmail.js'
+import { sendTokens } from '../utils/sendTokens.js'
 
 export const register = catchAsyncError(async(req, res, next) => {
     try{
@@ -113,3 +114,29 @@ function generateEmailTemplate(activationURL, name) {
         </html>
         `
 }
+
+export const activateUser = catchAsyncError(async(req, res, next) => {
+    try{
+        const { activationToken } = req.body
+        const user = jwt.verify(activationToken, process.env.ACTIVATION_SECRET)
+        if(!user){
+            return next(new ErrorHandler("Invalid token", 400))
+        }
+        const {name, email, password, avatar} = user
+        let User = await User.findOne({email})
+        if(User){
+            return next(new ErrorHandler("User already exists", 400))
+        }
+        User = await User.create({
+            name, 
+            email, 
+            password, 
+            avatar, 
+            accountVerified: true})
+        sendTokens(User, 201, res)
+        
+    } catch(error){
+        console.error("Activation error:", error)
+        return next(new ErrorHandler(error.message, 500))
+    }
+})
