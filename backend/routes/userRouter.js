@@ -1,5 +1,5 @@
 import express from 'express'
-import { register } from '../controller/userController.js';
+import { register, activateUser } from '../controller/userController.js';
 import upload from '../multer.js';
 import { catchAsyncError } from '../middleware/catchAsyncError.js';
 
