@@ -3,8 +3,8 @@ import { catchAsyncError } from '../middleware/catchAsyncError.js'
 import { User } from '../models/userModel.js'
 import cloudinary from '../config/cloudinary.js'
 import jwt from 'jsonwebtoken'
-import { sendEmail } from '../utils/sendEmail.js'
-import { sendTokens } from '../utils/sendTokens.js'
+import sendEmail from '../utils/sendEmail.js'
+import {sendTokens} from '../config/sendTokens.js'
 
 export const register = catchAsyncError(async(req, res, next) => {
     try{
@@ -40,20 +40,17 @@ export const register = catchAsyncError(async(req, res, next) => {
 
         const activationTokens = createActivationTokens(userData)
         const activationURL = `${process.env.FRONTEND_URL}/activation/${activationTokens}`;
-        try {
-            await sendEmail({
+        await sendEmail({
                 email: userData.email,
                 subject: "Activate your account",
                 message: generateEmailTemplate(activationURL, userData.name)
             })
-            res.status(201).json({
+
+        res.status(201).json({
                 success: true,
                 message: `Please check your email - ${userData.email} to activate your account!`
             })
 
-        } catch (error) {
-            return next(new ErrorHandler(error.message, 500))
-        }
     } catch(error){
         next(error)
     }
@@ -61,7 +58,7 @@ export const register = catchAsyncError(async(req, res, next) => {
 
 function createActivationTokens(user) {
     return jwt.sign(user, process.env.ACTIVATION_SECRET, {
-        expiresIn: "5m"
+        expiresIn: "10m"
     })
 }
 
@@ -118,25 +115,35 @@ function generateEmailTemplate(activationURL, name) {
 export const activateUser = catchAsyncError(async(req, res, next) => {
     try{
         const { activationToken } = req.body
+        if(!activationToken){
+            return next(new ErrorHandler("Activation token is required", 400))
+        }
+        if(!process.env.ACTIVATION_SECRET){
+            return next(new ErrorHandler("Server configuration error", 500))
+        }
         const user = jwt.verify(activationToken, process.env.ACTIVATION_SECRET)
         if(!user){
             return next(new ErrorHandler("Invalid token", 400))
         }
         const {name, email, password, avatar} = user
-        let User = await User.findOne({email})
-        if(User){
+        let existingUser = await User.findOne({email})
+        if(existingUser){
             return next(new ErrorHandler("User already exists", 400))
         }
-        User = await User.create({
-            name, 
-            email, 
-            password, 
-            avatar, 
-            accountVerified: true})
-        sendTokens(User, 201, res)
-        
+        const newUser = await User.create({
+            name,
+            email,
+            password,
+            avatar,
+            accountVerified: true
+        })
+        sendTokens(newUser, 201, res)
     } catch(error){
         console.error("Activation error:", error)
-        return next(new ErrorHandler(error.message, 500))
+        // Let error middleware handle JWT errors (JsonWebTokenError, TokenExpiredError)
+        if(error.name === "JsonWebTokenError" || error.name === "TokenExpiredError"){
+            return next(error)
+        }
+        return next(new ErrorHandler(error?.message ?? "Activation failed", 500))
     }
 })
