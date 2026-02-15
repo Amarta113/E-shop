@@ -12,7 +12,7 @@ export default function ActivationPage() {
         if(activation_token) {
             async function activationEmail() {
             try {
-                const res = await axios.post(`${API_BASE_URL}/api/v1/user/activation`, {
+                const res = await axios.post(`${API_BASE_URL}/user/activation`, {
                     activationToken: activation_token,
                 })
                 console.log(res.data.message)
