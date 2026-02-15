@@ -142,3 +142,26 @@ export const activateUser = catchAsyncError(async(req, res, next) => {
         return next(new ErrorHandler(error?.message ?? "Activation failed", 500))
     }
 })
+
+
+export const loginUser = catchAsyncError(async(req, res, next) => {
+    try{
+        const {email, password} = req.body
+        if(!email || !password){
+            return next(new ErrorHandler("Please provide email and password", 400))
+        }
+
+        const user = await User.findOne({email}).select("+password")
+        if(!user){
+            return next(new ErrorHandler("Invalid email or password", 401 ))
+        }
+        
+        const isPasswordMatched = await user.comparePassword(password)
+        if(!isPasswordMatched){
+            return next(new ErrorHandler("Invalid email or password", 401))
+        }
+        sendTokens(user, 200, res)
+    } catch(error){
+            next(error)
+    }
+})
