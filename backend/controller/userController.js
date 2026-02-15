@@ -33,7 +33,7 @@ export const register = catchAsyncError(async(req, res, next) => {
             password,
             accountVerified: false,
             avatar: {
-                public_Id: req.file.filename.split(".")[0],
+                public_id: req.file.filename.split(".")[0],
                 url: req.file.path
             }
         }
