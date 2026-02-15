@@ -85,12 +85,7 @@ function generateEmailTemplate(activationURL, name) {
                     <td style="padding:25px; color:#333333; font-size:16px;">
                         <p>Hello ${name},</p>
                         <p>Thank you for registering. Please click on the link below to activate your account:</p>
-
-                        <div style="margin:25px 0; text-align:center;">
-                        <span style="display:inline-block; background:#f0f0f0; padding:15px 25px; font-size:24px; letter-spacing:4px; font-weight:bold; border-radius:6px;">
-                            ${activationURL}
-                        </span>
-                        </div>
+                        <p style="word-break:break-all; font-size:13px; color:#4f46e5;"> ${activationURL} </p>
 
                         <p>This link will expire in 10 minutes.</p>
                         <p>If you did not request this, please ignore this email.</p>
