@@ -1,11 +1,22 @@
 import React from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import {LoginPage, SignupPage, ActivationPage} from "./Routes.jsx"
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
+import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function App () {
-
+  useEffect(() => {
+    axios.get(`${API_BASE_URL}/user/get-user`, {withCredentials: true})
+    .then((res) => {
+      toast.success(res.data.message)
+    })
+    .catch((err) => {
+      toast.error(err.response.data.message);
+    })
+  }, [])
   return (
     <BrowserRouter>
       <Routes>
