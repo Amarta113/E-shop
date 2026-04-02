@@ -3,15 +3,17 @@ import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai"
 import {toast} from "react-toastify"
 import styles from "../../styles/styles.js"
 import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
+console.log("API Base URL: ", API_BASE_URL)
 export default function Login () {
-    const navigate = useNavigate()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
+
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
