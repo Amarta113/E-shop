@@ -18,7 +18,7 @@ export default function Signup () {
     const handleSubmit = async(e) => {
        e.preventDefault();
        try{
-            
+            setIsLoading(true);
             const newForm = new FormData();
             
             newForm.append("file", avatar)
@@ -30,20 +30,23 @@ export default function Signup () {
 
             if(data?.success){
                 toast.success("Registration successful! Please check your email for the verification code.")
+                setEmail("")
+                setName("")
+                setAvatar(null)
+                setPassword("")
+            } else {
+                toast.error(data?.message || "Registration failed")
             }
-
-            setEmail("")
-            setName("")
-            setAvatar(null)
-            setPassword("")
 
         }
         catch (error){
-            setIsLoading(false)
-            toast.error(error?.response?.data.message)
+            const errorMessage = error?.response?.data?.message || error?.message || "An error occurred"
+            toast.error(errorMessage)
             console.error("Error during signup: ", error)
         } 
-        
+        finally {
+            setIsLoading(false)
+        }
     }
     const handleFileInputChange = (e) => {
         const file = e.target.files[0];
