@@ -1,7 +1,7 @@
 import React from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import {LoginPage, SignupPage, ActivationPage} from "./Routes.jsx"
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer, Bounce } from 'react-toastify';
 import { useEffect } from 'react';
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ export default function App () {
       toast.success(res.data.message)
     })
     .catch((err) => {
-      toast.error(err.response.data.message);
+      toast.error(err?.response?.data?.message);
     })
   }, [])
   return (
