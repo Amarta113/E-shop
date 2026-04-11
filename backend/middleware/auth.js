@@ -10,7 +10,7 @@ export const isAuthenticated = catchAsyncError(async(req, res, next) => {
             return next(new ErrorHandler("Unauthorized! Please login to access this resource", 401))
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        req.user = await User.findByeId(decoded.id)
+        req.user = await User.findById(decoded.id)
         if(!req.user){
             return next(new ErrorHandler("User not found", 404))
         }
