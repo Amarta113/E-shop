@@ -5,7 +5,7 @@ import cloudinary from "./config/cloudinary.js"
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: "eshop-upload",
+        folder: "avatar",
         allowed_formats: ['jpg', 'png', 'jpeg', 'webp'] 
     }
 })
