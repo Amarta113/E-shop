@@ -4,10 +4,8 @@ import {toast} from "react-toastify"
 import styles from "../../styles/styles.js"
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { server } from '../../server.js'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-console.log("API Base URL: ", API_BASE_URL)
 export default function Login () {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -18,7 +16,7 @@ export default function Login () {
     const handleSubmit = async (e) => {
         e.preventDefault()
         await axios
-        .post(`${API_BASE_URL}/user/login-user`, {
+        .post(`${server}/user/login-user`, {
             email, password
         },
         {
