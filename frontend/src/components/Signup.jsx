@@ -4,7 +4,7 @@ import { RxAvatar } from "react-icons/rx";
 import { Link } from 'react-router-dom'
 import styles from '../styles/styles'
 import axios from 'axios';
-import { server } from '../server.js';
+import { server } from '../server';
 import {toast} from 'react-toastify' 
 
 export default function Signup () {
@@ -37,7 +37,6 @@ export default function Signup () {
             } else {
                 toast.error(data?.message || "Registration failed")
             }
-
         }
         catch (error){
             const errorMessage = error?.response?.data?.message || error?.message || "An error occurred"
