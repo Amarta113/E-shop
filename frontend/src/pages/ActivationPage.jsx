@@ -1,8 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { server } from '../server.js'
 
 export default function ActivationPage() {
     const { activation_token } = useParams()
@@ -12,7 +11,7 @@ export default function ActivationPage() {
         if(activation_token) {
             async function activationEmail() {
             try {
-                const res = await axios.post(`${API_BASE_URL}/user/activation`, {
+                const res = await axios.post(`${server}/user/activation`, {
                     activationToken: activation_token,
                 })
                 console.log(res.data.message)
