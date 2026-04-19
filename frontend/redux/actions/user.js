@@ -1,23 +1,16 @@
 import axios from 'axios';
-import {server} from '../../server';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import {createAction} from "@reduxjs/toolkit";
+import {server} from '../../src/server.js'
 
-export const loadUser = () => async (dispatch) => {
+export const clearErrors = createAction("user/clearErrors");
+export const loadUser = createAsyncThunk("user/load", async (_, thunkAPI) => {
     try{
-        dispatch({
-            type: "LoadUserRequest"
-        })
-        const {data} = await axios.get(`${server}/user/getUser`,{
+        const {data} = await axios.get(`${server}/user/get-user`,{
             withCredentials: true,
         })
-        dispatch({
-            type: "LoadUserSuccess",
-            payload: data.user,
-        })
+        return data.user;
     }catch(error){
-        dispatch({
-            type: "LoadUserFail",
-            payload: error.response.data.message,
-        })  
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message || "Failed to load user");
     }
-
-}
+});
