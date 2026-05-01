@@ -6,18 +6,21 @@ import { server } from '../server.js'
 export default function ActivationPage() {
     const { activation_token } = useParams()
     const [error, setError] = useState(false)
+    const [message, setMessage] = useState("")
 
     useEffect(() => {
         if(activation_token) {
             async function activationEmail() {
             try {
-                const res = await axios.post(`${server}/user/activation`, {
-                    activationToken: activation_token,
+                await axios.post(`${server}/user/activation`, {
+                    activation_token,
                 })
-                console.log(res.data.message)
+                setError(false)
+                setMessage("Your account has been created successfully")
             } catch (error) {
-                console.log(error.response?.data?.message ?? error.message)
+                const errorMessage = error.response?.data?.message ?? "Activation failed. Please register again to get a new link."
                 setError(true)
+                setMessage(errorMessage)
             }
         }
             activationEmail()
@@ -31,11 +34,7 @@ export default function ActivationPage() {
             justifyContent: "center",
             alignItems: "center",
         }}>
-            {error? (
-                <p>Your token is expired</p>
-            ) : (
-                <p>Your account has been created successfully</p>
-            )}
+            <p>{message || (error ? "Activation failed" : "Activating account...")}</p>
         </div>
     )
 }
