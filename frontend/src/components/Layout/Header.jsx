@@ -6,6 +6,7 @@ import { categoriesData, productData } from "../../static/data.js";
 import { AiOutlineSearch,AiOutlineHeart, AiOutlineShoppingCart } from 'react-icons/ai'
 import {IoIosArrowDown, IoIosArrowForward} from 'react-icons/io'
 import {LayoutGrid} from 'lucide-react'
+import { CgProfile } from 'react-icons/cg'
 import DropDown from "./DropDown.jsx"
 import Navbar from "./Navbar.jsx"
 
@@ -121,13 +122,15 @@ export default function Header({activeHeading}) {
                                 <span className="absolute -top-1 -right-1 rounded-full bg-[#40d132] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">1</span>
                             </div>
                         </div>
-                    
-                        <div className={`${styles.normalFlex}`}>
-                            <div className="relative cursor-pointer mr-[15px]">
-                                <AiOutlineShoppingCart size={30}
+                        <div className="relative cursor-pointer mr-[15px]">
+                            <AiOutlineShoppingCart size={30}
                                 color='rgb(255, 255, 255 / 83%)'/>
-                                <span className="absolute -top-1 -right-1 rounded-full bg-[#40d132] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">1</span>
-                            </div>
+                            <span className="absolute -top-1 -right-1 rounded-full bg-[#40d132] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">1</span>
+                        </div>
+                        <div className="relative cursor-pointer mr-[15px]">
+                            <Link to="/login">
+                            <CgProfile size={30} color='rgb(255, 255, 255 / 83%)'/>
+                            </Link>
                         </div>
                     </div>
                 </div>
