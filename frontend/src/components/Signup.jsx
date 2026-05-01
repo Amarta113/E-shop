@@ -21,12 +21,12 @@ export default function Signup () {
             setIsLoading(true);
             const newForm = new FormData();
             
-            newForm.append("file", avatar)
+            newForm.append("avatar", avatar)
             newForm.append("name", name)
             newForm.append("email", email)
             newForm.append("password", password)
             
-            const {data} = await axios.post(`${server}/user/create-user`, newForm)
+            const {data} = await axios.post(`${server}/user/register`, newForm)
 
             if(data?.success){
                 toast.success("Registration successful! Please check your email for the verification code.")
