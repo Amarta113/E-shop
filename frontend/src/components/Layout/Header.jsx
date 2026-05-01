@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import logoImg from '../../assets/markit-logo.jpg'
 import styles from '../../styles/styles'
 import { categoriesData, productData } from "../../static/data.js";
-import { AiOutlineSearch } from 'react-icons/ai'
+import { AiOutlineSearch,AiOutlineHeart, AiOutlineShoppingCart } from 'react-icons/ai'
 import {IoIosArrowDown, IoIosArrowForward} from 'react-icons/io'
 import {LayoutGrid} from 'lucide-react'
 import DropDown from "./DropDown.jsx"
 import Navbar from "./Navbar.jsx"
 
-export default function Header() {
+export default function Header({activeHeading}) {
     const [searchTerm, setSearchTerm] = useState("")
     const [searchData, setSearchData] = useState(null)
     const [active, setActive] = useState(false)
@@ -108,14 +108,30 @@ export default function Header() {
                                 categoriesData = {categoriesData}
                                 setDropDown={setDropDown}
                         />) : null }
-                        {/* navbar items */}
-                        <div className={`${styles.normalFlex}`}>
+                    </div>
+                    {/* navbar items */}
+                    <div className={`${styles.normalFlex}`}>
                             <Navbar active={activeHeading}/>
+                    </div>
+                    <div className="flex">
+                        <div className={`${styles.normalFlex}`}>
+                            <div className="relative cursor-pointer mr-[15px]">
+                                <AiOutlineHeart size={30}
+                                color='rgb(255, 255, 255 / 83%)'/>
+                                <span className="absolute -top-1 -right-1 rounded-full bg-[#40d132] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">1</span>
+                            </div>
+                        </div>
+                    
+                        <div className={`${styles.normalFlex}`}>
+                            <div className="relative cursor-pointer mr-[15px]">
+                                <AiOutlineShoppingCart size={30}
+                                color='rgb(255, 255, 255 / 83%)'/>
+                                <span className="absolute -top-1 -right-1 rounded-full bg-[#40d132] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">1</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        
         </>
     )
 }
