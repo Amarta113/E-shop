@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
-import logoImg from '../../assets/vendors-logo.png'
+import logoImg from '../../assets/markit-logo.jpg'
 import styles from '../../styles/styles'
 import { categoriesData, productData } from "../../static/data.js";
 import { AiOutlineSearch } from 'react-icons/ai'
 import {IoIosArrowDown, IoIosArrowForward} from 'react-icons/io'
 import {LayoutGrid} from 'lucide-react'
 import DropDown from "./DropDown.jsx"
+import Navbar from "./Navbar.jsx"
 
 export default function Header() {
     const [searchTerm, setSearchTerm] = useState("")
@@ -47,7 +48,7 @@ export default function Header() {
                     placeholder='Search for products...'                    
                     value={searchTerm} 
                     onChange={handleSearchChange}
-                    className='h-[40px] w-full px-2 border-[2px] border-dark-blue-300 rounded-full ' 
+                    className='h-[40px] w-full text-sm px-2 border-[2px] border-dark-blue-300 rounded-full ' 
                     />
                 <AiOutlineSearch
                  size={30}
@@ -95,7 +96,7 @@ export default function Header() {
                                 <span>All Categories</span>
                             </span>
                             <IoIosArrowDown 
-                            size={20}
+                            size={22}
                             className='absolute right-2 top-5 cursor-pointer'
                             onClick={() => setDropDown(!dropDown)}
                         />
@@ -107,6 +108,10 @@ export default function Header() {
                                 categoriesData = {categoriesData}
                                 setDropDown={setDropDown}
                         />) : null }
+                        {/* navbar items */}
+                        <div className={`${styles.normalFlex}`}>
+                            <Navbar active={activeHeading}/>
+                        </div>
                     </div>
                 </div>
             </div>
