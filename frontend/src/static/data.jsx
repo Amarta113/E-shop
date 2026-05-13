@@ -567,7 +567,7 @@ export const productData = [
     },
     {
       name: "Careers",
-      link: "/carrers",
+      link: "/careers",
     },
     {
       name: "Store Locations",
