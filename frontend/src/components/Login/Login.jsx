@@ -26,6 +26,8 @@ export default function Login () {
             toast.success("Login successful!")
             console.log(res.data)
             navigate("/")
+            window.location.reload();
+
         })
         .catch(err => {
             toast.error("Login failed!")
